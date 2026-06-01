@@ -1,35 +1,40 @@
 pipeline {
-  agent any
-  stages {
-    stage('build') {
-      steps {
-        echo 'compile maven app'
-        sh 'mvn compile'
-      }
+    agent any
+
+    tools {
+        maven 'Maven 3.9.6'
     }
 
-    stage('test') {
-      steps {
-        echo 'test maven app'
-        sh 'mvn package -DskipTests'
-      }
+    stages {
+        stage('build') {
+            steps {
+                echo 'compile maven app'
+                sh 'mvn compile'
+            }
+        }
+
+        stage('test') {
+            steps {
+                echo 'test maven app'
+                sh 'mvn package -DskipTests'
+            }
+        }
+
+        stage('package') {
+            steps {
+                echo 'package maven app'
+                sh 'mvn package -DskipTests'
+            }
+        }
     }
 
-    stage('package') {
-      steps {
-        echo 'package maven app'
-        sh 'mvn package -DskipTests'
-      }
-    }
+    post {
+        success {
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        }
 
-  }
-  tools {
-    maven 'Maven 3.9.6'
-  }
-  post {
-    always {
-      echo 'Pipeline completed'
+        always {
+            echo 'Pipeline completed'
+        }
     }
-
-  }
 }
