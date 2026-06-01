@@ -19,7 +19,7 @@ pipeline {
       steps {
         echo 'package maven app'
         sh 'mvn package -DskipTests'
-        archiveArtifacts(artifacts: 'added artifact archive step', defaultExcludes: true)
+        archiveArtifacts 'target/*.jar'
       }
     }
 
